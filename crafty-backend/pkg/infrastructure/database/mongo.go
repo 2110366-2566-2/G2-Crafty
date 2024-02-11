@@ -14,6 +14,10 @@ type MongoInstance struct {
 	database *mongo.Database
 }
 
+type MongodbRepository struct {
+	collection *mongo.Collection
+}
+
 var MI *MongoInstance
 
 func NewMongoInstance(uri string, dbname string) *MongoInstance {
@@ -39,4 +43,8 @@ func NewMongoInstance(uri string, dbname string) *MongoInstance {
 
 func (i *MongoInstance) NewMongodbCollection(collectionName string) *mongo.Collection {
 	return i.database.Collection(collectionName)
+}
+
+func (m *MongoInstance) NewMongodbRepository(collectionName string) (*MongodbRepository, error) {
+	return &MongodbRepository{collection: m.database.Collection(collectionName)}, nil
 }

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/pkg/infrastructure"
 	repo "github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/pkg/user-auth/repo"
+	"github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/pkg/infrastructure"
 )
 
 type Auth struct {

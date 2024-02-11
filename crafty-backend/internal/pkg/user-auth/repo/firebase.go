@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"firebase.google.com/go/auth"
-	"github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/pkg/infrastructure"
+	"github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/pkg/infrastructure"
 )
 
 type FirebaseAuthRepo struct {

@@ -1,10 +1,5 @@
 go 1.21.6
 
 use (
-	./crafty-backend/internal/app/user-api
-	./crafty-backend/internal/pkg/user-auth
-		// ./crafty-backend/internal/app/admin-api
-	./crafty-backend/internal/pkg/admin-auth
-	./crafty-backend/pkg/infrastructure
-	./crafty-backend/internal/pkg/user
+	./crafty-backend
 )
