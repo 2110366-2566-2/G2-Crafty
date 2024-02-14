@@ -1,0 +1,479 @@
+basePath: /api/v1
+definitions:
+  authMiddleware.ErrorResponse:
+    properties:
+      error: {}
+      message:
+        type: string
+    type: object
+  model.TAddress:
+    properties:
+      address_1:
+        type: string
+      amphoe:
+        type: string
+      postal_code:
+        type: string
+      province:
+        type: string
+      street:
+        type: string
+      tambon:
+        type: string
+    type: object
+  model.TPackage:
+    properties:
+      price:
+        type: number
+    type: object
+  model.TPost:
+    properties:
+      content:
+        type: string
+      crafterID:
+        type: string
+      detail:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      packageList:
+        items:
+          $ref: '#/definitions/model.TPackage'
+        type: array
+      reviewList:
+        items:
+          $ref: '#/definitions/model.TReview'
+        type: array
+      thumbnail:
+        $ref: '#/definitions/model.TThumbnail'
+    type: object
+  model.TReview:
+    properties:
+      comment:
+        type: string
+      ratingStar:
+        type: number
+      uid:
+        type: string
+    type: object
+  model.TThumbnail:
+    properties:
+      thumbnailType:
+        type: string
+      thumbnailUrl:
+        type: string
+    type: object
+  model.TUser:
+    properties:
+      address:
+        $ref: '#/definitions/model.TAddress'
+      phone_number:
+        type: string
+      pictureUrl:
+        type: string
+      uid:
+        type: string
+      username:
+        type: string
+    type: object
+  postAPI.GetPostByIDResponse:
+    properties:
+      error: {}
+      post:
+        $ref: '#/definitions/model.TPost'
+    type: object
+  postAPI.Package:
+    properties:
+      price:
+        type: number
+    type: object
+  postAPI.Post:
+    properties:
+      content:
+        type: string
+      crafterID:
+        type: string
+      detail:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      packageList:
+        items:
+          $ref: '#/definitions/postAPI.Package'
+        type: array
+      reviewList:
+        items:
+          $ref: '#/definitions/postAPI.Review'
+        type: array
+      thumbnail:
+        $ref: '#/definitions/postAPI.Thumbnail'
+    type: object
+  postAPI.Review:
+    properties:
+      comment:
+        type: string
+      ratingStar:
+        type: number
+      uid:
+        type: string
+    type: object
+  postAPI.Thumbnail:
+    properties:
+      thumbnailType:
+        type: string
+      thumbnailUrl:
+        type: string
+    type: object
+  postAPI.UpdatePostRequest:
+    properties:
+      post:
+        $ref: '#/definitions/postAPI.Post'
+    type: object
+  postAPI.UpdatePostResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  uploadAPI.UploadErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  uploadAPI.UploadSuccessResponse:
+    properties:
+      message:
+        type: string
+      url:
+        type: string
+    type: object
+  userAPI.Address:
+    properties:
+      address_1:
+        type: string
+      amphoe:
+        type: string
+      postal_code:
+        type: string
+      province:
+        type: string
+      street:
+        type: string
+      tambon:
+        type: string
+    type: object
+  userAPI.GetUserByIDResponse:
+    properties:
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/model.TUser'
+    type: object
+  userAPI.UpdateUserRequest:
+    properties:
+      user:
+        $ref: '#/definitions/userAPI.User'
+    type: object
+  userAPI.UpdateUserResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  userAPI.User:
+    properties:
+      address:
+        $ref: '#/definitions/userAPI.Address'
+      phone:
+        type: string
+      picture_url:
+        type: string
+      username:
+        type: string
+    type: object
+host: crafty.kuranasaki.work
+info:
+  contact:
+    email: kongphop.c@kuranasaki.work
+    name: API Support
+  description: This is an auto-generated API Docs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: CraftyUserAPI Documents
+  version: 1.0.0
+paths:
+  /post:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteUser
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Delete User Success
+          schema:
+            $ref: '#/definitions/postAPI.UpdatePostResponse'
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Delete User Failed
+          schema:
+            $ref: '#/definitions/postAPI.UpdatePostResponse'
+      security:
+      - Firebase: []
+      tags:
+      - Post
+    put:
+      consumes:
+      - application/json
+      description: UpdateUser
+      parameters:
+      - description: UpdateUser
+        in: body
+        name: UpdateUser
+        required: true
+        schema:
+          $ref: '#/definitions/postAPI.UpdatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update User Success
+          schema:
+            $ref: '#/definitions/postAPI.UpdatePostResponse'
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Update User Failed
+          schema:
+            $ref: '#/definitions/postAPI.UpdatePostResponse'
+      security:
+      - Firebase: []
+      tags:
+      - Post
+  /post/{PostID}:
+    get:
+      consumes:
+      - application/json
+      description: Get User's Info
+      parameters:
+      - description: PostID
+        in: path
+        name: PostID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/postAPI.GetPostByIDResponse'
+            type: array
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Firebase: []
+      tags:
+      - Post
+  /post/list:
+    get:
+      consumes:
+      - application/json
+      description: ListPost
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/postAPI.GetPostByIDResponse'
+            type: array
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Firebase: []
+      tags:
+      - Post
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update User Success
+          schema:
+            $ref: '#/definitions/uploadAPI.UploadSuccessResponse'
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Update User Failed
+          schema:
+            $ref: '#/definitions/uploadAPI.UploadErrorResponse'
+      security:
+      - Firebase: []
+      tags:
+      - Upload
+  /user:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteUser
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Delete User Success
+          schema:
+            $ref: '#/definitions/userAPI.UpdateUserResponse'
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Delete User Failed
+          schema:
+            $ref: '#/definitions/userAPI.UpdateUserResponse'
+      security:
+      - Firebase: []
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get User's Info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/userAPI.GetUserByIDResponse'
+            type: array
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Firebase: []
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: UpdateUser
+      parameters:
+      - description: UpdateUser
+        in: body
+        name: UpdateUser
+        required: true
+        schema:
+          $ref: '#/definitions/userAPI.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update User Success
+          schema:
+            $ref: '#/definitions/userAPI.UpdateUserResponse'
+        "401":
+          description: Invalid Token
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "403":
+          description: No Permissions
+          schema:
+            $ref: '#/definitions/authMiddleware.ErrorResponse'
+        "500":
+          description: Update User Failed
+          schema:
+            $ref: '#/definitions/userAPI.UpdateUserResponse'
+      security:
+      - Firebase: []
+      tags:
+      - User
+schemes:
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  Firebase:
+    flow: password
+    scopes:
+      admin: All Permissions Granted
+      mod: All Permissions Except adding MOD
+      user: Permissions granted upto project owner
+    tokenUrl: https://crafty.kuranasaki.work/api/v1/auth/oauth/token
+    type: oauth2
+swagger: "2.0"

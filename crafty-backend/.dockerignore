@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+.vscode
+*Dockerfile*
+*docker-compose*
+vendor/*
+gin*
+tmp/*
+

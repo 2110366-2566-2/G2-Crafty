@@ -8,9 +8,12 @@ import (
 )
 
 func (m *AuthMiddleware) VerifyToken(c *fiber.Ctx) error {
+	if (c.Method() == "OPTIONS") {
+		return c.Next()
+	}
 	authorization := c.Get("authorization")
 
-	tokens := strings.Split(authorization, "Bearer ")
+	tokens := strings.Split(authorization, " ")
 	length := len(tokens)
 	if length != 2 {
 		return c.Status(401).JSON(ErrorResponse{

@@ -18,7 +18,7 @@ func ValidCreatedmodel() (string, model.Tmodel) {
 		Province:    "ProvinceThatIsValid",
 		Postal_code: "Postal_codeThatIsValid",
 	}
-	Validmodel := model.Tmodel{
+	Validmodel := model.TUser{
 		UID:          UID,
 		modelname:    "modelnameThatIsValid",
 		Phone_number: "PhoneNumberThatIsValid",

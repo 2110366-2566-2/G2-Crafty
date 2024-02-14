@@ -1,0 +1,64 @@
+
+name: Build frontend image from develop
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - crafty-frontend/**
+    branches:
+      - "develop"
+
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: develop
+    # env:
+    #   NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}}
+    #   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}}
+    #   NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID}}
+    #   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{vars.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}}
+    #   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{vars.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}}
+    #   NEXT_PUBLIC_FIREBASE_APP_ID: ${{vars.NEXT_PUBLIC_FIREBASE_APP_ID}}
+    #   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{vars.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID}}
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Create env file
+        run: |
+          touch ./crafty-frontend/.env 
+          echo -e 'NEXT_PUBLIC_FIREBASE_API_KEY=${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{vars.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{vars.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_APP_ID=${{vars.NEXT_PUBLIC_FIREBASE_APP_ID}}' >> ./crafty-frontend/.env
+          echo -e 'NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{vars.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID}}' >> ./crafty-frontend/.env
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm64/v8,linux/arm64/v7
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push 
+        uses: docker/build-push-action@v5
+        with:
+          context: ./crafty-frontend
+          push: true
+          tags: kuranasaki/crafty-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64,linux/arm64/v8
+  

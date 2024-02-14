@@ -66,11 +66,32 @@ func (s *UserService) GetUserById(UID string) (model.TUser, error) {
 	return user, err
 }
 
-// not yet written
 func (s *UserService) UpdateUser(User model.TUser) error {
+	_,err := s.r.UserRepository.GetUserById(User.UID)
+	if err!= nil {
+        return err
+    }
+
+	err = s.r.UserRepository.UpdateUser(User)
+	if err!= nil {
+        return err
+    }
+
 	return nil
 }
 
 func (s *UserService) DeleteUser(UID string) error {
-	return nil
+	user, err := s.r.UserRepository.GetUserById(UID)
+	if err!= nil {
+        return err
+    }
+	if user.UID!= "" {
+		err = s.r.UserRepository.DeleteUser(UID)
+        if err!= nil {
+            return err
+        }
+		return nil // Return nil if deletion is successful
+
+    }
+	return fmt.Errorf("User Not Found")
 }

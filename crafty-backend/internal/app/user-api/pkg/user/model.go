@@ -40,8 +40,8 @@ type GetUserByIDRequest struct {
 }
 
 type GetUserByIDResponse struct {
-	User  model.TUser `json:"user"`
-	Error error       `json:"error"`
+	Message string		 	`json:"message"`
+	User  	model.TUser `json:"user"`
 }
 
 type UpdateUserRequest struct {

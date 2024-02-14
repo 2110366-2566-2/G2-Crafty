@@ -3,8 +3,8 @@ package post_test
 import (
 	"testing"
 
-	post "github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/pkg/post"
-	repo "github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/pkg/post/repo"
+	repo "github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/domain/model"
+	post "github.com/Admin-OR-1-1/2110336-SE2-Crafty/crafty-backend/internal/domain/service/post"
 	"github.com/stretchr/testify/assert"
 )
 

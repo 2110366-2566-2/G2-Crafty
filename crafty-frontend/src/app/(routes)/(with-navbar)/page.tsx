@@ -1,9 +1,9 @@
-import { FC } from "react";
-import WaterfallContainer from "./_components/WaterfallContainer";
+import { FC } from 'react';
+import WaterfallContainer from './_components/WaterfallContainer';
 
 const HomePage: FC = () => {
   return (
-    <div className="flex flex-col w-full gap-2 mx-auto bg-[#ffffff]">
+    <div className="mx-auto flex w-full flex-col gap-2 bg-[#ffffff]">
       <WaterfallContainer />
     </div>
   );

@@ -4,11 +4,11 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "tmp\\main.exe"
-  cmd = "go build -o ./tmp/main.exe ./cmd/main.go "
+  bin = "tmp/main"
+  cmd = "swag init -g ./cmd/main.go && go build -o ./tmp/main ./cmd/main.go "
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
-  exclude_file = ["internal\\docs\\docs.go"]
+  exclude_file = ["docs/docs.go"]
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false

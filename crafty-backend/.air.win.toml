@@ -5,10 +5,10 @@ tmp_dir = "tmp"
 [build]
   args_bin = []
   bin = "tmp\\main.exe"
-  cmd = "go build -o .\\tmp\\main.exe .\\cmd\\main.go "
+  cmd = "swag init -g .\\cmd\\main.go && go build -o .\\tmp\\main.exe .\\cmd\\main.go "
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
-  exclude_file = ["internal\\docs\\docs.go"]
+  exclude_file = ["docs\\docs.go"]
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
@@ -31,7 +31,7 @@ tmp_dir = "tmp"
   time = false
 
 [misc]
-  clean_on_exit = false
+  clean_on_exit = true
 
 [screen]
   clear_on_rebuild = false

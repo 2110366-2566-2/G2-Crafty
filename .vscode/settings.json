@@ -6,7 +6,10 @@
     "(routes)": "routes"
   },
   "conventionalCommits.scopes": [
-    "Basic auth",
-    "user"
-  ]
+    "Backend/basic-auth",
+    "Backend/user",
+    "Frontend",
+    "Backend"
+  ],
+  "eslint.workingDirectories": ["./crafty-backend", "./crafty-frontend"]
 }

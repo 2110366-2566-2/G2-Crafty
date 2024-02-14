@@ -13,6 +13,6 @@ type IAuthMiddleware interface {
 	VerifyToken(*fiber.Ctx) error
 }
 
-func NewAuthMiddleware() IAuthMiddleware {
-	return &AuthMiddleware{}
+func NewAuthMiddleware(repos *repository.Repositories) IAuthMiddleware {
+	return &AuthMiddleware{repos: repos}
 }
