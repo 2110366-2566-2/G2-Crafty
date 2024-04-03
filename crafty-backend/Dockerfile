@@ -1,32 +1,59 @@
-FROM golang:alpine AS dependency
+# ---- Base Node ----
+FROM node:16-alpine AS base
 
-WORKDIR /src/app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Install pnpm
+# RUN npm install -g pnpm
+
+WORKDIR /usr/src/app
+
+# ---- Dependencies ----
+FROM base AS dependencies
+# Copy the pnpm-lock file to leverage Docker caching
+COPY package.json pnpm-lock.yaml ./
+
+# Install all node packages, including 'devDependencies' for the build process
+# RUN pnpm fetch --prod false
+# RUN pnpm install -r --offline
+
+# FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 
-COPY go.mod .
-COPY go.sum .
-ENV GO111MODULE=on
-RUN go mod download
-COPY . . 
+# Copy Prisma files
+COPY prisma ./prisma/
 
-FROM dependency AS docs
+# Install the Prisma Client
+RUN npx prisma generate
 
-RUN go install github.com/swaggo/swag/cmd/swag
+# ---- Build ----
+FROM dependencies AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY . .
+# Build the application
+RUN pnpm run build
 
-RUN swag init -g cmd/main.go
+# ---- Release ----
+FROM base AS release
+# Install production node packages only
+# COPY package.json pnpm-lock.yaml ./
+# RUN pnpm fetch --prod true
+# RUN pnpm install -r --offline
+COPY --from=dependencies /usr/src/app/node_modules /usr/src/app/node_modules
 
-FROM dependency AS build
+# Copy built assets from the 'build' stage
+COPY --from=build /usr/src/app/dist ./dist
+# Copy generated Prisma client from the 'dependencies' stage
+# COPY --from=dependencies /usr/src/app/node_modules/.prisma ./.prisma
+# COPY --from=dependencies /usr/src/app/node_modules/@prisma ./@prisma
 
-COPY --from=docs /src/app/docs ./docs
-RUN go build -o server ./cmd/main.go
+# Copy any other required files you may need
+# COPY .env ./
 
-FROM golang:alpine AS server
+EXPOSE 5000
 
-ENV PORT=8000
-WORKDIR /app
-COPY --from=build /src/app/server .
-# COPY --from=build /src/app/docs ./docs
-# COPY --from=build /src/app/server .
-EXPOSE 8000
-
-CMD ./server
+# Set the default command for the container
+CMD ["node", "dist/src/main"]

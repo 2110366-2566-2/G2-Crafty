@@ -60,3 +60,11 @@ body::-webkit-scrollbar-thumb {
     )
     rgb(var(--background-start-rgb));
 } */
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+p {
+  user-select: none;
+}

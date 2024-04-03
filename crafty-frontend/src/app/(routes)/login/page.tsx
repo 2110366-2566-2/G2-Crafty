@@ -16,6 +16,8 @@ import LogoLeftSide from '@/app/_components/ui/logoLeftSide';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/configs/axiosConfig';
 import { useFirebaseAuthContext } from '@/contexts/firebaseAuthContext';
+import { apiService } from '@/configs/apiService/apiService';
+import { ApiStatus } from '@/configs/apiService/types';
 
 const Page = () => {
   const router = useRouter();
@@ -50,13 +52,22 @@ const Page = () => {
 
       // This gives you a Google Access Token. You can use it to access Google APIs.
       // const credential = GoogleAuthProvider.credentialFromResult(result);
-      console.log(result.user.email);
 
-      const isValid = await checkUserValid();
-      if (isValid.error) return;
-      if (isValid.valid) {
-        router.push('/');
+      // const isValid = await checkUserValid();
+      // if (isValid.error) return;
+      // if (isValid.valid) {
+      //   router.push('/');
+      // } else {
+      //   setState(2);
+      // }
+      if (!auth.currentUser) return;
+      const response = await apiService.loginWithFirebaseToken(await result.user.getIdToken());
+      if (response.status === ApiStatus.SUCCESS) {
+        window.location.href = '/';
       } else {
+        const responseRegister = await apiService.registerWithFirebaseToken(
+          await result.user.getIdToken()
+        );
         setState(2);
       }
 
@@ -139,13 +150,18 @@ const Page = () => {
   const onSubmitOtp = async () => {
     if (confirmationResult && otp.length === 6) {
       try {
-        await confirmationResult.confirm(otp);
-        const isValid = await checkUserValid();
-        if (isValid.error) return;
-        if (isValid.valid) {
+        const result = await confirmationResult.confirm(otp);
+
+        if (!auth.currentUser) return;
+        const response = await apiService.loginWithFirebaseToken(await result.user.getIdToken());
+        if (response.status === ApiStatus.SUCCESS) {
           router.push('/');
         } else {
+          const responseRegister = await apiService.registerWithFirebaseToken(
+            await result.user.getIdToken()
+          );
           setState(2);
+          setPhoneNumber('');
         }
       } catch (error) {
         console.error(error);
@@ -223,31 +239,32 @@ const Page = () => {
   const registerUser = async (): Promise<void> => {
     if (!user) return;
 
-    apiClient
-      .put('/user', {
-        user: {
-          address: {
-            address_1: address,
-            street: road,
-            tambon: subDistrict,
-            amphoe: district,
-            province: province,
-            postal_code: postalCode,
-          },
-          phone: phone,
-          picture_url: `https://picsum.photos/seed/${await user.uid}/400/400`,
-          username: name,
-        },
-      })
-      .then(() => {
-        // Update successful
-        console.log("Created user's data successfully");
-        router.push('/');
-      })
-      .catch((error) => {
-        // An error occurred
-        console.log('An error occurred', error);
-      });
+    // apiClient
+    //   .put('/user', {
+    //     user: {
+    //       address: {
+    //         address_1: address,
+    //         street: road,
+    //         tambon: subDistrict,
+    //         amphoe: district,
+    //         province: province,
+    //         postal_code: postalCode,
+    //       },
+    //       phone: phone,
+    //       picture_url: `https://picsum.photos/seed/${await user.uid}/400/400`,
+    //       username: name,
+    //     },
+    //   })
+    //   .then(() => {
+    //     // Update successful
+    //     console.log("Created user's data successfully");
+    //     router.push('/');
+    //   })
+    //   .catch((error) => {
+    //     // An error occurred
+    //     console.log('An error occurred', error);
+    //   });
+    router.push('/');
   };
 
   return (

@@ -26,6 +26,8 @@ const config: Config = {
         500: '#9A9A9A',
         600: '#5C5C5C',
       },
+      ct_pos: '#00C93F',
+      ct_neg: '#DE1135',
     },
     extend: {
       backgroundImage: {
@@ -40,6 +42,7 @@ const config: Config = {
         ct_xl:
           '-8px 8px 12px 0 rgba(0, 0, 0, 0.1), -3px 3px 6px 0 rgba(0, 0, 0, 0.15), 0px 0px 4px 0 rgba(0, 0, 0, 0.20)',
         ct_2xl: '1px -1px 20px 0 rgba(0, 0, 0, 0.15), -20px 20px 25px 0 rgba(0, 0, 0, 0.15)',
+        top: '0 -5px 5px -5px rgba(0, 0, 0, 0.2)',
       },
       width: {
         ct_sm: 'full',

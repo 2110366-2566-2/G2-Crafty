@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  backend:
+    image: kuranasaki/crafty-backend:latest
+    pull_policy: always
+    container_name: crafty-backend
+    ports:
+      - 5000:5000
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      WALLET_DB_URI: ${WALLET_DB_URI}
+      MONGODB_NAME: ${MONGODB_NAME}
+      FIREBASE_SDK: ${FIREBASE_SDK}
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: 5000
+      JWT_SECRET: ${JWT_SECRET}
+      SCB_API_KEY: ${SCB_API_KEY}
+      SCB_API_SECRET: ${SCB_API_SECRET}
+      SCB_BILLER_ID: ${SCB_BILLER_ID}
+      SCB_MERCHANT_ID: ${SCB_MERCHANT_ID}
+      SCB_TERMINAL_ID: ${SCB_TERMINAL_ID}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
+      FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
+    # env_file:
+    #   - .env
+    # environment:

@@ -57,7 +57,7 @@ const PersonalInfomationPage: FC<PersonalInfomationProps> = ({
   };
 
   return (
-    <div className="flex w-[400px] flex-col items-center justify-center gap-y-6">
+    <div className="flex w-full max-w-[400px] flex-col items-center justify-center gap-y-6 p-2">
       <p className="text-center text-4xl font-bold text-ct_brown-500">กรอกข้อมูลส่วนตัว</p>
 
       <div className="grid w-full grid-cols-12 gap-2">

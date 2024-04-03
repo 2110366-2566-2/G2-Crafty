@@ -4,9 +4,15 @@ interface ButtonProps {
   children: string | React.ReactElement<any>;
   disabled?: boolean;
   onClick?: () => void;
+  className?: string;
 }
 
-const Button: FC<ButtonProps> = ({ children, disabled = false, onClick = () => {} }) => {
+const Button: FC<ButtonProps> = ({
+  children,
+  disabled = false,
+  onClick = () => {},
+  className = '',
+}) => {
   const onClickHandler = () => {
     if (!disabled) {
       onClick();
@@ -16,7 +22,7 @@ const Button: FC<ButtonProps> = ({ children, disabled = false, onClick = () => {
   return (
     <>
       <button
-        className={`btn h-10 min-h-0 w-full rounded-lg border-none ${disabled ? 'no-animation cursor-default bg-ct_gray-300 hover:bg-ct_gray-300 active:scale-100' : 'bg-ct_brown-500'} text-base text-white`}
+        className={`${className} btn h-10 min-h-0 w-full rounded-lg border-none ${disabled ? 'no-animation cursor-default bg-ct_gray-300 hover:bg-ct_gray-300 active:scale-100' : 'bg-ct_brown-500'} text-base text-white`}
         onClick={onClickHandler}>
         {children}
       </button>
