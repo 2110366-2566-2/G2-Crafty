@@ -3,12 +3,12 @@ name: Build backend image from develop
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - crafty-backend/**
-    branches:
-      - "develop"
-      - "develop-backend"
+  # push:
+  #   paths:
+  #     - crafty-backend/**
+    # branches:
+      # - "develop"
+      # - "develop-backend"
 
 
 jobs:

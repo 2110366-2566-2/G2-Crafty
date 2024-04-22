@@ -8,12 +8,17 @@ export class PostsService {
   constructor(private prisma: PrismaService) {}
 
   async addReview(postId: string, desc: string, rate: number, sender: string) {
+    console.log(postId, desc, rate, sender)
     return await this.prisma.review.create({
       data: {
         desc,
         rate,
         sender,
-        postId,
+        post: {
+          connect: {
+            id: postId,
+          },
+        },
       },
     })
   }
@@ -71,6 +76,57 @@ export class PostsService {
   }
 
   async findAll(search?: string) {
+    return await this.prisma.post.findMany({
+      include: {
+        reviews: true,
+        userFavorite: true,
+      },
+      where: {
+        AND: [
+          {
+            isBanned: false, // Filter out posts where isBanned is false
+          },
+          {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                detail: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                content: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                owner: {
+                  username: {
+                    contains: search,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      orderBy: [
+        {
+          priority: 'desc',
+        },
+      ],
+    })
+  }
+
+  async findAllAdmin(search?: string) {
     return await this.prisma.post.findMany({
       include: {
         reviews: true,
@@ -163,6 +219,24 @@ export class PostsService {
       where: { id },
       data: {
         priority: { decrement: 1 },
+      },
+    })
+  }
+
+  async banning(id: string) {
+    return await this.prisma.post.update({
+      where: { id },
+      data: {
+        isBanned: true,
+      },
+    })
+  }
+
+  async unbanning(id: string) {
+    return await this.prisma.post.update({
+      where: { id },
+      data: {
+        isBanned: false,
       },
     })
   }

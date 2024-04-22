@@ -3,11 +3,11 @@ name: Build frontend image from develop
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - crafty-frontend/**
-    branches:
-      - "develop"
+  # push:
+  #   paths:
+  #     - crafty-frontend/**
+    # branches:
+      # - "develop"
 
 
 jobs:

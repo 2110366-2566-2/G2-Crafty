@@ -97,6 +97,7 @@ model Post {
   reviews      Review[]
   userFavorite User[]     @relation("userFavorite")
   Chatroom     Chatroom[]
+  isBanned     Boolean    @default(false)
 }
 
 model Review {
@@ -107,4 +108,24 @@ model Review {
 
   post   Post   @relation(fields: [postId], references: [id])
   postId String
+}
+
+model ProductHistory {
+  id        String  @id @default(cuid())
+  title     String
+  desc      String
+  price     Float
+  deadline  String?
+  status    String?
+  note      String?
+
+  // ### tee
+  imageUrl  String?
+  // ###
+
+  isPaid    Boolean
+
+  date      DateTime  @default(now())
+  crafterId String
+  crafteeId String
 }

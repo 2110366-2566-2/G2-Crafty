@@ -13,6 +13,7 @@ import {
   ProductDetail,
   ReadChatroom,
 } from '@/app/_common/interface/chat';
+import { ProductHistory } from '@/app/_common/interface/product-history';
 
 class ApiService {
   constructor() {
@@ -103,7 +104,7 @@ class ApiService {
     }
   };
 
-  getPosts = async (search: string): Promise<ApiResponseType<Post[]>> => {
+  getPosts = async (search?: string): Promise<ApiResponseType<Post[]>> => {
     try {
       const response = await apiClient.get('/posts', { params: { search } });
       return {
@@ -388,6 +389,116 @@ class ApiService {
       return {
         status: ApiStatus.ERROR,
         errorMessage: 'Payment Failed',
+      };
+    }
+  };
+
+  adminGetUsers = async (): Promise<ApiResponseType<User[]>> => {
+    try {
+      const response = await apiClient.get('/users');
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to fetch users',
+      };
+    }
+  };
+
+  banPostById = async (id: string): Promise<ApiResponseType<Post>> => {
+    try {
+      const response = await apiClient.patch(`/posts/${id}/banning`);
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to ban post',
+      };
+    }
+  };
+
+  unbanPostById = async (id: string): Promise<ApiResponseType<Post>> => {
+    try {
+      const response = await apiClient.patch(`/posts/${id}/unbanning`);
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to unban post',
+      };
+    }
+  };
+
+  adminGetPosts = async (search?: string): Promise<ApiResponseType<Post[]>> => {
+    try {
+      const response = await apiClient.get('/posts/all-admin', { params: { search } });
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to fetch posts',
+      };
+    }
+  };
+
+  adminGetProductHistory = async (): Promise<ApiResponseType<ProductHistory[]>> => {
+    try {
+      const response = await apiClient.get('/products/history');
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to fetch product history',
+      };
+    }
+  };
+
+  getUsers = async (): Promise<ApiResponseType<User[]>> => {
+    try {
+      const response = await apiClient.get('/users');
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to fetch users',
+      };
+    }
+  };
+
+  reviewProduct = async (
+    id: string,
+    desc: string,
+    rate: number,
+    sender: string
+  ): Promise<ApiResponseType<Post>> => {
+    try {
+      const response = await apiClient.post(`/posts/${id}/reviews`, { desc, rate, sender });
+      return {
+        status: ApiStatus.SUCCESS,
+        data: response.data,
+      };
+    } catch {
+      return {
+        status: ApiStatus.ERROR,
+        errorMessage: 'Failed to review product',
       };
     }
   };

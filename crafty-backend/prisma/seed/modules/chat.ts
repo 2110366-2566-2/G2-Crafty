@@ -43,4 +43,20 @@ export const chatSeed = async () => {
       messageType: MessageType.TEXT,
     },
   })
+  // get all postId from database and save in 'postIds'
+  let postIds = []
+  await prisma.post.findMany().then((posts) => {
+    postIds = posts.map((post) => post.id)
+  })
+
+  for (let i = 0; i < 5; i++) {
+    await prisma.chatroom.create({
+      data: {
+        id: `chatroom00${i + 2}`,
+        crafterId: 'ValOHuWT2JZ6lvXN8pV4Fs9QQPG2',
+        crafteeId: 'chat_user1_id',
+        postId: postIds[i % postIds.length], // Alternate postId
+      },
+    })
+  }
 }

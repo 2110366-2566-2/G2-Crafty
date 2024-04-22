@@ -26,7 +26,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('crafty API')
     .setDescription('The API for crafty application')
-    .setVersion('0.1')
+    .setVersion('0.8')
     .addBearerAuth()
     .build()
 

@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Product } from '@prisma/client'
-import { Max, Min } from 'class-validator'
+import { ProductHistory } from '@prisma/client'
 
-export class CreateProductDto implements Partial<Product> {
+export class CreateProductHistoryDto implements Partial<ProductHistory> {
   @ApiProperty({
     description: 'The title of the product',
     type: String,
@@ -22,15 +21,7 @@ export class CreateProductDto implements Partial<Product> {
     type: Number,
     example: 1900,
   })
-  @Min(0)
   price: number
-
-  @ApiProperty({
-    description: 'The chatRoomId of the product',
-    type: String,
-    example: 'chatroom001',
-  })
-  chatroomId: string
 
   @ApiProperty({
     description: 'The url of the product image',
@@ -59,4 +50,25 @@ export class CreateProductDto implements Partial<Product> {
     // example: 'The note of the product',
   })
   note?: string
+
+  @ApiProperty({
+    description: 'The isPaid of the product',
+    type: Boolean,
+    // example: true,
+  })
+  isPaid?: boolean
+
+  @ApiProperty({
+    description: 'The crafterId of the product',
+    type: String,
+    // example: The crafterId of the product',
+  })
+  crafterId?: string
+
+  @ApiProperty({
+    description: 'The crafteeId of the product',
+    type: String,
+    // example: The crafteeId of the product',
+  })
+  crafteeId?: string
 }

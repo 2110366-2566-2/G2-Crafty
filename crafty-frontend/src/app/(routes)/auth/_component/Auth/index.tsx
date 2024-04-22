@@ -11,7 +11,7 @@ const AuthPage = () => {
   const login = async () => {
     const response = await apiService.login(username, password);
     if (response.status === ApiStatus.ERROR) return false;
-    window.location.href = '/';
+    window.location.href = '/admin';
   };
 
   return (

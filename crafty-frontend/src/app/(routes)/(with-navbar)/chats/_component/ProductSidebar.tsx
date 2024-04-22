@@ -9,9 +9,10 @@ export interface ProductSidebarProps {
   product: ProductDetail | null;
   chatroomId: string;
   isCrafter: boolean;
+  postId: string | null;
 }
 
-const ProductSidebar = ({ product, chatroomId, isCrafter }: ProductSidebarProps) => {
+const ProductSidebar = ({ product, chatroomId, isCrafter, postId }: ProductSidebarProps) => {
   // State to manage sidebar visibility
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,6 +49,7 @@ const ProductSidebar = ({ product, chatroomId, isCrafter }: ProductSidebarProps)
               product={product}
               chatroomId={chatroomId}
               isCrafter={isCrafter}
+              postId={postId}
             />
           )}
         </div>

@@ -11,6 +11,8 @@ export interface Post {
   reviews: Review[];
   userFavorite: User[];
   ownerId?: string;
+
+  isBanned: boolean;
 }
 
 export interface Package {

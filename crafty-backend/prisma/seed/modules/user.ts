@@ -5,6 +5,7 @@ export const userSeed = async () => {
 
   await prisma.user.create({
     data: {
+      id: 'admin_id',
       username: 'master',
       hashedPwd: '$2b$10$R.KRjTCXGbRTj2/fFj3u3.U/3MDwOKD1EYfHVMiNs2o3eK/xM87Wu',
       role: 'ADMIN',

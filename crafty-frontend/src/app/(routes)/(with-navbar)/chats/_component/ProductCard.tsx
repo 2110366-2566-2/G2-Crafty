@@ -6,6 +6,7 @@ import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { ProductSidebarProps } from './ProductSidebar';
 import StepProgress from './StepProgress';
 import { ApiStatus } from '@/configs/apiService/types';
+import userStore from '@/app/_common/store/user/user-store';
 
 interface MyTextInputProps {
   label: string;
@@ -18,12 +19,14 @@ interface MyTextInputProps {
 interface CreateProductFormProps {
   chatroomId: string;
   isCrafter: boolean;
+  postId: string | null;
 }
 
 export interface NonEmptyProductSidebarProps {
   product: ProductDetail;
   chatroomId: string;
   isCrafter: boolean;
+  postId: string | null;
 }
 
 const MyTextInput = ({ label, placeholder, required, value, setText }: MyTextInputProps) => {
@@ -129,7 +132,7 @@ const CreateProductForm = ({ chatroomId }: CreateProductFormProps) => {
   );
 };
 
-const EmptyProductCard = ({ chatroomId, isCrafter }: CreateProductFormProps) => {
+const EmptyProductCard = ({ chatroomId, isCrafter, postId }: CreateProductFormProps) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   const handleCreateProduct = () => {
@@ -139,9 +142,21 @@ const EmptyProductCard = ({ chatroomId, isCrafter }: CreateProductFormProps) => 
   return (
     <>
       {showCreateForm ? (
-        <CreateProductForm chatroomId={chatroomId} isCrafter={isCrafter} />
+        <CreateProductForm chatroomId={chatroomId} isCrafter={isCrafter} postId={postId} />
       ) : (
         <div className="flex h-full flex-col items-center justify-center gap-4">
+          <div className="mb-8 text-lg font-bold">
+            Post:{' '}
+            {postId ? (
+              <span
+                className="ml-1 font-normal underline hover:cursor-pointer hover:shadow-md"
+                onClick={() => (window.location.href = `/feed-detail/${postId}`)}>
+                {postId}
+              </span>
+            ) : (
+              'ไม่มี'
+            )}{' '}
+          </div>
           <AiOutlineShoppingCart size={100} />
           <div className="text-2xl font-semibold">ยังไม่มีสินค้าในขณะนี้</div>
           <div className="flex min-w-[200px]">
@@ -154,7 +169,12 @@ const EmptyProductCard = ({ chatroomId, isCrafter }: CreateProductFormProps) => 
   );
 };
 
-const RealProductCard = ({ product, chatroomId, isCrafter }: NonEmptyProductSidebarProps) => {
+const RealProductCard = ({
+  product,
+  chatroomId,
+  isCrafter,
+  postId,
+}: NonEmptyProductSidebarProps) => {
   const [step, setStep] = useState(product.step);
 
   const cancelPayment = async () => {
@@ -196,6 +216,32 @@ const RealProductCard = ({ product, chatroomId, isCrafter }: NonEmptyProductSide
       const isCancelSuccess = await cancelPayment();
       if (!isCancelSuccess) return;
     }
+
+    try {
+      await apiService.deleteProduct(product.id);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const reviewProduct = async (desc: string, rate: number, sender: string) => {
+    console.log('reviewProduct', desc, rate, sender);
+    if (step != 6) return;
+
+    if (!desc || rate.toString() === '') {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    if (rate < 1 || rate > 5) {
+      alert('Please fill in rating between 1-5');
+      return;
+    }
+
+    if (!postId) return;
+
+    await apiService.reviewProduct(postId, desc, rate, sender);
 
     try {
       await apiService.deleteProduct(product.id);
@@ -284,10 +330,26 @@ const RealProductCard = ({ product, chatroomId, isCrafter }: NonEmptyProductSide
 
   // console.log('isCrafter: ', isCrafter);
 
+  const [desc, setDesc] = useState('');
+  const [rate, setRate] = useState(0);
+  const sender = userStore((state) => state.user.username);
+
   return (
     <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-12 p-10">
       <div
         className={`${product.imageUrl ? 'mt-[200px]asdf' : ''} flex flex-col items-center gap-6`}>
+        <div className="flex flex-col gap-2 font-bold">
+          <div>
+            Post:{' '}
+            <span
+              className="ml-1 font-normal underline hover:cursor-pointer hover:shadow-md"
+              onClick={() => (window.location.href = `/feed-detail/${postId}`)}>
+              {postId}
+            </span>
+          </div>
+          <hr className="border-1 w-full text-red-500"></hr>
+        </div>
+
         <div className="flex flex-col break-all text-2xl font-bold">
           <div>{product.title}</div>
           <div className="ml-2 text-lg">#{product.id}</div>
@@ -323,6 +385,32 @@ const RealProductCard = ({ product, chatroomId, isCrafter }: NonEmptyProductSide
             ? incrementButtonStatus[step - 1].crafterTitle
             : incrementButtonStatus[step - 1].crafteeTitle}
         </Button>
+        {step === 6 && !isCrafter && (
+          <>
+            {/* rating number input */}
+            <input
+              type="number"
+              min="1"
+              max="5"
+              placeholder="Rating"
+              className="input rounded-sm"
+              onChange={(e) => setRate(parseInt(e.target.value))}
+            />
+            {/* review comment */}
+            <textarea
+              placeholder="Review"
+              className="input rounded-sm"
+              onChange={(e) => setDesc(e.target.value)}></textarea>
+
+            <Button
+              className="rounded-xl"
+              onClick={() => {
+                reviewProduct(desc, rate, sender);
+              }}>
+              Review and Finish
+            </Button>
+          </>
+        )}
         {(step <= 3 || step == 6) && (
           <Button className="rounded-xl bg-red-500 hover:bg-red-700" onClick={deleteProduct}>
             {step != 6 ? 'Cancel this product' : 'Finish'}
@@ -356,12 +444,19 @@ const arePropsEqual = (prevProps: ProductSidebarProps, nextProps: ProductSidebar
   return true;
 };
 
-const ProductCard = ({ product, chatroomId, isCrafter }: ProductSidebarProps) => {
+const ProductCard = ({ product, chatroomId, isCrafter, postId }: ProductSidebarProps) => {
   return (
     <div className="flex h-full min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-9">
-      {!product && <EmptyProductCard chatroomId={chatroomId} isCrafter={isCrafter} />}
+      {!product && (
+        <EmptyProductCard chatroomId={chatroomId} isCrafter={isCrafter} postId={postId} />
+      )}
       {product && (
-        <RealProductCard product={product} chatroomId={chatroomId} isCrafter={isCrafter} />
+        <RealProductCard
+          product={product}
+          chatroomId={chatroomId}
+          isCrafter={isCrafter}
+          postId={postId}
+        />
       )}
     </div>
   );

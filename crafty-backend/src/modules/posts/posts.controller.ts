@@ -13,12 +13,14 @@ import {
 import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { CreateReviewDto } from './dto/create-review'
 import { FavoriteDto } from './dto/favorite.dto'
 import { AuthGuard } from '../auth/guard/auth.guard'
 import { UserEntity } from '../users/entities/user.entity'
 import { SearchDto } from './dto/search.dto'
+import { Roles } from '../auth/guard/roles.decorator'
+import { PostEntity } from './dto/post.entity'
 
 @ApiTags('posts')
 @Controller('posts')
@@ -61,6 +63,19 @@ export class PostsController {
     return this.postsService.create(user.id, createPostDto)
   }
 
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles('ADMIN')
+  @Get('all-admin')
+  @ApiOkResponse({
+    description: 'Get all posts for admin',
+    type: PostEntity,
+    isArray: true,
+  })
+  findAllAdmin(@Query() searchDto: SearchDto) {
+    return this.postsService.findAllAdmin(searchDto.search)
+  }
+
   @Get()
   findAll(@Query() searchDto: SearchDto) {
     return this.postsService.findAll(searchDto.search)
@@ -97,5 +112,29 @@ export class PostsController {
   @Patch(':id/unboosting')
   unboosting(@Param('id') id: string) {
     return this.postsService.unboosting(id)
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles('ADMIN')
+  @Patch(':id/banning')
+  @ApiOkResponse({
+    description: 'banning a post',
+    type: PostEntity,
+  })
+  banning(@Param('id') id: string) {
+    return this.postsService.banning(id)
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles('ADMIN')
+  @Patch(':id/unbanning')
+  @ApiOkResponse({
+    description: 'Unbanning a post',
+    type: PostEntity,
+  })
+  unbanning(@Param('id') id: string) {
+    return this.postsService.unbanning(id)
   }
 }

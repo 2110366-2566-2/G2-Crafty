@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { PayProductDto } from './dto/pay-product.dto'
 import { WalletService } from '../wallet/wallet.service'
+import { CreateProductHistoryDto } from './dto/create-product-history.dto'
 
 @Injectable()
 export class ProductsService {
@@ -36,7 +37,33 @@ export class ProductsService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
       const product = await this.findOne(id)
-      let updateData = {}
+      const updateData = {}
+
+      if (product.step === 5 && updateProductDto.incrementStep) {
+        // If the product is already at step 6, save the product in the products_history table
+        const chatroom = await this.prisma.chatroom.findUnique({
+          where: { id: product.chatroomId },
+        })
+        if (!chatroom) {
+          throw new NotFoundException(
+            `Chatroom with ID ${product.chatroomId} not found`,
+          )
+        }
+        await this.prisma.productHistory.create({
+          data: {
+            title: product.title,
+            desc: product.desc,
+            price: product.price,
+            imageUrl: product.imageUrl,
+            deadline: product.deadline,
+            status: product.status,
+            note: product.note,
+            isPaid: product.isPaid,
+            crafteeId: chatroom.crafteeId,
+            crafterId: chatroom.crafterId,
+          },
+        })
+      }
 
       // Check if incrementStep is true and the current step is less than 6
       if (updateProductDto.incrementStep && product.step < 6) {
@@ -83,5 +110,9 @@ export class ProductsService {
       console.error('Payment processing failed:', err)
       throw new Error('Payment processing failed. Please try again later.')
     }
+  }
+
+  async history() {
+    return await this.prisma.productHistory.findMany()
   }
 }

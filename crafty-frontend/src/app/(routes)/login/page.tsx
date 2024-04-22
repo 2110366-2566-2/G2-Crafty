@@ -62,6 +62,7 @@ const Page = () => {
       // }
       if (!auth.currentUser) return;
       const response = await apiService.loginWithFirebaseToken(await result.user.getIdToken());
+      // localStorage.setItem('token', await result.user.getIdToken());
       if (response.status === ApiStatus.SUCCESS) {
         window.location.href = '/';
       } else {
@@ -154,6 +155,7 @@ const Page = () => {
 
         if (!auth.currentUser) return;
         const response = await apiService.loginWithFirebaseToken(await result.user.getIdToken());
+        // localStorage.setItem('token', await result.user.getIdToken());
         if (response.status === ApiStatus.SUCCESS) {
           router.push('/');
         } else {

@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   username: string;
+  role?: string;
 }
 
 export interface ReadChatroom {
@@ -10,12 +11,17 @@ export interface ReadChatroom {
   isCrafteeRead: boolean;
   crafter: User;
   craftee: User;
+  postId?: string | null;
 }
 
 export interface SidebarData {
   talkerName: string;
   lastChatTime: string;
   chatroomId: string;
+  isAdmin: boolean;
+  isRead: boolean;
+  myName: string;
+  postId?: string | null;
 }
 
 export enum MessageType {
@@ -53,12 +59,13 @@ export interface ChatroomDetail {
   Product: ProductDetail | null;
   crafterId?: string;
   crafteeId?: string;
+  postId: string | null;
 }
 
 export interface PostChatroom {
   crafterId: string;
   crafteeId: string;
-  postId: string;
+  postId?: string | null;
 }
 
 export interface ProductDetail {
